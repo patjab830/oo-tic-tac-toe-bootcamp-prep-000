@@ -1,107 +1,113 @@
 class TicTacToe
-
-end
-WIN_COMBINATIONS = [[0, 1, 2],
-                    [3, 4, 5],
-                    [6, 7, 8],
-                    [0, 3, 6],
-                    [1, 4, 7],
-                    [2, 5, 8],
-                    [0, 4, 8],
-                    [2, 4, 6]]
-
-# START SECONDARY HELPERS
-def display_board(board)
-  puts " #{board[0]} | #{board[1]} | #{board[2]} "
-  puts "-----------"
-  puts " #{board[3]} | #{board[4]} | #{board[5]} "
-  puts "-----------"
-  puts " #{board[6]} | #{board[7]} | #{board[8]} "
-end
-
-def input_to_index(user_input)
-  user_input.to_i - 1
-end
-
-def move(board, index, current_player)
-  board[index] = current_player
-end
-
-def valid_move?(board, index)
-  index.between?(0,8) && !position_taken?(board, index)
-end
-
-def position_taken?(board, index)
-  !(board[index].nil? || board[index] == " ")
-end
-
-def full?(board)
-  value = true
-  board.each do |space|
-    value = value && space != " "
+  def initialize
+    @board = [" ", " ", " ", " ", " ", " ", " ", " ", " "]
   end
-  value
-end
-# END SECONDARY HELPERS
 
+  WIN_COMBINATIONS = [[0, 1, 2],
+                      [3, 4, 5],
+                      [6, 7, 8],
+                      [0, 3, 6],
+                      [1, 4, 7],
+                      [2, 5, 8],
+                      [0, 4, 8],
+                      [2, 4, 6]]
 
-def won?(board)
-  WIN_COMBINATIONS.detect do |combo|
-    position_taken?(board, combo[0]) && position_taken?(board, combo[1]) &&
-    position_taken?(board, combo[2]) && ((board[combo[0]] == "X" &&
-    board[combo[1]] == "X" && board[combo[2]] == "X") || (board[combo[0]] == "O" &&
-    board[combo[1]] == "O" && board[combo[2]] == "O"))
+  # HELPER METHODS
+  def display_board()
+    puts " #{@board[0]} | #{@board[1]} | #{@board[2]} "
+    puts "-----------"
+    puts " #{@board[3]} | #{@board[4]} | #{@board[5]} "
+    puts "-----------"
+    puts " #{@board[6]} | #{@board[7]} | #{@board[8]} "
   end
-end
 
-def draw?(board)
-  !won?(board) && full?(board) ? true : false
-end
+  def input_to_index(user_input)
+    user_input.to_i - 1
+  end
 
-def over?(board)
-  won?(board) || draw?(board) || full?(board) ? true : false
-end
+  def move(index, current_player="X")
+    @board[index] = current_player
+  end
 
-def winner(board)
-  won = won?(board)
-  won ? board[won[0]] : nil
-end
+  def position_taken?(index)
+    !(@board[index].nil? || @board[index] == " ")
+  end
 
-def turn_count(board)
-  counter = 0
+  def valid_move?(index)
+    index.between?(0,8) && !position_taken?(index)
+  end
 
-  board.each do |spot|
-    if spot == "X" || spot == "O"
-      counter += 1
+  # END HELPER METHODS
+
+  def turn()
+    puts "Please enter 1-9:"
+    input = gets.strip
+    index = input_to_index(input)
+
+    if valid_move?(index)
+      move(index, current_player(board))
+      display_board()
+    else
+      turn()
     end
   end
-  counter
-end
 
-def current_player(board)
-  player = ( turn_count(board) % 2 == 0 ) ? "X" : "O"
-end
+  def turn_count()
+    counter = 0
 
-def turn(board)
-  puts "Please enter 1-9:"
-  input = gets.strip
-  index = input_to_index(input)
-
-  if valid_move?(board, index)
-    move(board, index, current_player(board))
-    display_board(board)
-  else
-    turn(board)
-  end
-end
-
-# Define your play method below
-def play(board)
-  until over?(board)
-    turn(board)
+    @board.each do |spot|
+      if spot == "X" || spot == "O"
+        counter += 1
+      end
+    end
+    counter
   end
 
-  if won?(board)
+  def current_player()
+    player = ( turn_count(@board) % 2 == 0 ) ? "X" : "O"
+  end
+
+  def won?()
+    WIN_COMBINATIONS.detect do |combo|
+      position_taken?(combo[0]) && position_taken?(combo[1]) &&
+      position_taken?(combo[2]) && ((@board[combo[0]] == "X" &&
+      @board[combo[1]] == "X" && @board[combo[2]] == "X") ||
+      (@board[combo[0]] == "O" && @board[combo[1]] == "O" &&
+      @board[combo[2]] == "O"))
+    end
+  end
+
+  def full?()
+    value = true
+    @board.each do |space|
+      value = value && space != " "
+    end
+    value
+  end
+
+  def draw?()
+    !won?() && full?() ? true : false
+  end
+
+  def over?()
+    won?() || draw?() || full?() ? true : false
+  end
+
+  def winner()
+    won = won?()
+    won ? @board[won[0]] : nil
+  end
+
+end
+
+# RUN THIS METHOD
+
+def play()
+  until over?()
+    turn()
+  end
+
+  if won?()
     puts "Congratulations #{winner(board)}!"
   else
     puts "Cat's Game!"
