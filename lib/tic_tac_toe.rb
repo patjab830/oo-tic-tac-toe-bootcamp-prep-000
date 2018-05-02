@@ -13,7 +13,7 @@ class TicTacToe
                       [2, 4, 6]]
 
   # HELPER METHODS
-  def display_board()
+  def display_board
     puts " #{@board[0]} | #{@board[1]} | #{@board[2]} "
     puts "-----------"
     puts " #{@board[3]} | #{@board[4]} | #{@board[5]} "
@@ -39,20 +39,20 @@ class TicTacToe
 
   # END HELPER METHODS
 
-  def turn()
+  def turn
     puts "Please enter 1-9:"
     input = gets.strip
     index = input_to_index(input)
 
     if valid_move?(index)
       move(index, current_player(board))
-      display_board()
+      display_board
     else
-      turn()
+      turn
     end
   end
 
-  def turn_count()
+  def turn_count
     counter = 0
 
     @board.each do |spot|
@@ -63,11 +63,11 @@ class TicTacToe
     counter
   end
 
-  def current_player()
+  def current_player
     player = ( turn_count(@board) % 2 == 0 ) ? "X" : "O"
   end
 
-  def won?()
+  def won?
     WIN_COMBINATIONS.detect do |combo|
       position_taken?(combo[0]) && position_taken?(combo[1]) &&
       position_taken?(combo[2]) && ((@board[combo[0]] == "X" &&
@@ -77,7 +77,7 @@ class TicTacToe
     end
   end
 
-  def full?()
+  def full?
     value = true
     @board.each do |space|
       value = value && space != " "
@@ -85,16 +85,16 @@ class TicTacToe
     value
   end
 
-  def draw?()
-    !won?() && full?() ? true : false
+  def draw?
+    !won? && full? ? true : false
   end
 
-  def over?()
-    won?() || draw?() || full?() ? true : false
+  def over?
+    won? || draw? || full? ? true : false
   end
 
-  def winner()
-    won = won?()
+  def winner
+    won = won?
     won ? @board[won[0]] : nil
   end
 
@@ -102,12 +102,12 @@ end
 
 # RUN THIS METHOD
 
-def play()
-  until over?()
-    turn()
+def play
+  until over?
+    turn
   end
 
-  if won?()
+  if won?
     puts "Congratulations #{winner(board)}!"
   else
     puts "Cat's Game!"
